@@ -6,6 +6,7 @@
     :copyright: (c) 2014 by Taehoon Kim.
     :license: BSD, see LICENSE for more details.
 """
+from dateutil import tz
 import json
 import shutil
 import requests
@@ -37,6 +38,11 @@ class LineMessage:
         # 2: Group
         self.toType = message.toType
         self.createdTime = datetime.fromtimestamp(message.createdTime/1000)
+
+        from_zone = tz.tzutc()
+        to_zone = tz.gettz('Asia/Bangkok')
+        utc = self.createdTime.replace(tzinfo=from_zone)
+        self.createdTime = utc.astimezone(to_zone)
 
     def __repr__(self):
         try:
